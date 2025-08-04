@@ -16,6 +16,9 @@ public partial class Ball : Area3D
 	private float totalDistance;
 	private float traveledDistance;
 
+	private GpuParticles3D explosion;
+	private GpuParticles3D trail;
+
 
 	// Nodes
 	private Timer timer;
@@ -27,21 +30,29 @@ public partial class Ball : Area3D
 		timer.Timeout += OnTimerTimeout;
 
 		BodyEntered += OnCollision;
+
+		explosion = GetNode<GpuParticles3D>("Explosion");
+		trail = GetNode<GpuParticles3D>("Trail");
 	}
 
 
 	private void OnCollision(Node3D body)
 	{
-		if (!active) return;
-
 		GD.Print("HIT: " + body.Name);
-		active = false;
-		SetPhysicsProcess(false);
-		// timer.Stop();
-
-		// Snap to position or explosion effect here
+		EndTargetReached();
 
 		// ReturnToQueue();
+	}
+
+	private void EndTargetReached()
+	{
+		active = false;
+		// SetPhysicsProcess(false);
+		// timer.Stop();
+
+		//Particles
+		trail.Emitting = false;
+		explosion.Emitting = true;
 	}
 
 
@@ -73,8 +84,14 @@ public partial class Ball : Area3D
 
 		if (progress >= 1) // Reach destination
 		{
+			EndTargetReached();
+		}
+
+		if (!explosion.Emitting && !active)
+		{
+			GD.Print("DONE");
 			ReturnToQueue();
-		}	
+		}
 	}
 
 	public void Shoot(Vector3 t_pos, Vector3 t_targetPos)
@@ -88,6 +105,9 @@ public partial class Ball : Area3D
 		curveAmount *= NormalizeFloat(totalDistance, 0, Player.MAX_RANGE);
 		traveledDistance = 0;
 		active = true;
+		// Particles
+		trail.Emitting = true;
+		explosion.Emitting = false;
 
 		timer.Start();
 	}
@@ -95,8 +115,8 @@ public partial class Ball : Area3D
 	public void ReturnToQueue()
 	{
 		// Return to pool instead of QueueFree
+		SetPhysicsProcess(false);
 		GetParent<ProjectilePool>()?.ReturnProjectile(this);
-		active = false;
 	}
 
 	private void OnTimerTimeout()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://b1a82qxo4u8ps"]
+[gd_scene load_steps=16 format=3 uid="uid://b1a82qxo4u8ps"]
 
 [ext_resource type="Script" uid="uid://n0ac4unhb1b2" path="res://Scripts/Projectiles/Ball.cs" id="1_s71y7"]
 [ext_resource type="Material" uid="uid://t341tiyhqu1u" path="res://Materials/Blue.tres" id="2_cxiws"]
@@ -23,12 +23,39 @@ curve = SubResource("Curve_uj653")
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7w8cf"]
 spread = 180.0
 initial_velocity_min = 1.0
-initial_velocity_max = 2.0
-gravity = Vector3(0, -1, 0)
+initial_velocity_max = 3.0
+gravity = Vector3(0, 0, 0)
 scale_min = 0.5
 scale_curve = SubResource("CurveTexture_76egd")
 
 [sub_resource type="SphereMesh" id="SphereMesh_6nv4k"]
+radial_segments = 20
+rings = 5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cxiws"]
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.196078, 0.317647, 1, 1)
+emission_enabled = true
+emission = Color(0.0117647, 0, 1, 1)
+emission_energy_multiplier = 5.0
+
+[sub_resource type="Curve" id="Curve_33dyg"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.99999, 0), 0.0, 0.0, 0, 0, Vector2(1, 0.011236), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_uj653"]
+curve = SubResource("Curve_33dyg")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_76egd"]
+spread = 180.0
+initial_velocity_min = 5.0
+initial_velocity_max = 8.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.3
+scale_max = 0.75
+scale_curve = SubResource("CurveTexture_uj653")
+
+[sub_resource type="SphereMesh" id="SphereMesh_7w8cf"]
 
 [node name="Ball" type="Area3D"]
 script = ExtResource("1_s71y7")
@@ -47,10 +74,22 @@ mesh = SubResource("SphereMesh_eohde")
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
 shape = SubResource("ConvexPolygonShape3D_s71y7")
 
-[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+[node name="Trail" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.00136054)
 material_override = ExtResource("3_33dyg")
+transparency = 0.7
 amount = 25
 lifetime = 0.5
 interpolate = false
+trail_lifetime = 5.0
 process_material = SubResource("ParticleProcessMaterial_7w8cf")
 draw_pass_1 = SubResource("SphereMesh_6nv4k")
+
+[node name="Explosion" type="GPUParticles3D" parent="."]
+material_override = SubResource("StandardMaterial3D_cxiws")
+emitting = false
+amount = 50
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_76egd")
+draw_pass_1 = SubResource("SphereMesh_7w8cf")
