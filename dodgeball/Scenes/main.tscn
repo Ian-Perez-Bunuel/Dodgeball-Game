@@ -51,6 +51,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.39299, 0.346826, -1.65791)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.38244, 9.68384)
 
 [node name="mainBodyMesh" type="MeshInstance3D" parent="Target"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.491487, 1.64236, 0)
 mesh = SubResource("BoxMesh_jjgbg")
 skeleton = NodePath("")
 
