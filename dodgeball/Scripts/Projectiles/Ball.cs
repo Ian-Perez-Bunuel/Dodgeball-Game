@@ -47,7 +47,7 @@ public partial class Ball : Area3D
 	private void EndTargetReached()
 	{
 		active = false;
-		// SetPhysicsProcess(false);
+		SetPhysicsProcess(false);
 		// timer.Stop();
 
 		//Particles
@@ -85,12 +85,6 @@ public partial class Ball : Area3D
 		if (progress >= 1) // Reach destination
 		{
 			EndTargetReached();
-		}
-
-		if (!explosion.Emitting && !active)
-		{
-			GD.Print("DONE");
-			ReturnToQueue();
 		}
 	}
 
