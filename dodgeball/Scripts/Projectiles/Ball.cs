@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Data;
 
 public partial class Ball : Area3D
 {
@@ -15,20 +17,22 @@ public partial class Ball : Area3D
 	private Vector3 forwardDir;
 	private float totalDistance;
 	private float traveledDistance;
+	public enum CurveType
+	{
+		None,
+		Left,
+		Right,
+		Up,
+		Down
+	};
+	CurveType curveType;
 
 	private GpuParticles3D explosion;
 	private GpuParticles3D trail;
 
-
-	// Nodes
-	private Timer timer;
-
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		timer = GetNode<Timer>("Timer");
-		timer.Timeout += OnTimerTimeout;
-
 		BodyEntered += OnCollision;
 
 		explosion = GetNode<GpuParticles3D>("Explosion");
@@ -48,7 +52,6 @@ public partial class Ball : Area3D
 	{
 		active = false;
 		SetPhysicsProcess(false);
-		// timer.Stop();
 
 		//Particles
 		trail.Emitting = false;
@@ -68,7 +71,7 @@ public partial class Ball : Area3D
 		// Base position along the straight path
 		Vector3 basePos = startPos + forwardDir * traveledDistance;
 
-		curveDirection = forwardDir.Cross(Vector3.Up).Normalized();
+		curveDirection = GetCurveDirection(curveType); // Right
 		// Get offset from curve 
 		Vector3 offset = curveDirection * (curve.Sample(progress) * curveAmount);
 
@@ -88,7 +91,31 @@ public partial class Ball : Area3D
 		}
 	}
 
-	public void Shoot(Vector3 t_pos, Vector3 t_targetPos)
+	private Vector3 GetCurveDirection(CurveType t_curveType)
+    {
+		switch (t_curveType)
+		{
+			case CurveType.None:
+				return new Vector3(0, 0, 0);
+
+			case CurveType.Left:
+				return -forwardDir.Cross(Vector3.Up).Normalized();
+
+			case CurveType.Right:
+				return forwardDir.Cross(Vector3.Up).Normalized();
+
+			case CurveType.Up:
+				return Vector3.Up;
+
+			case CurveType.Down:
+				return -Vector3.Up;
+				
+			default:
+    			return new Vector3(0, 0, 0);
+        }
+    }
+
+	public void Shoot(Vector3 t_pos, Vector3 t_targetPos, CurveType t_curveType)
 	{
 		GlobalPosition = t_pos;
 
@@ -103,7 +130,7 @@ public partial class Ball : Area3D
 		trail.Emitting = true;
 		explosion.Emitting = false;
 
-		timer.Start();
+		curveType = t_curveType;
 	}
 
 	public void ReturnToQueue()

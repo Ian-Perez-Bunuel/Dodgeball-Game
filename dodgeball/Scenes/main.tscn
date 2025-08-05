@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://ib8ktiuf20h"]
+[gd_scene load_steps=9 format=3 uid="uid://ib8ktiuf20h"]
 
 [ext_resource type="PackedScene" uid="uid://b640b1mhcg07c" path="res://Scenes/Player/player.tscn" id="1_jjgbg"]
 
@@ -21,6 +21,12 @@ size = Vector3(50, 0.1, 50)
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_8gbba"]
 points = PackedVector3Array(25.3919, 0.346825, 25.3919, -25.3919, -0.446825, -25.3919, -25.3919, 0.346825, -25.3919, 25.3919, -0.446825, -25.3919, -25.3919, -0.446825, 25.3919, -25.3919, 0.346825, 25.3919, 25.3919, 0.346825, -25.3919, 25.3919, -0.446825, 25.3919)
 
+[sub_resource type="BoxMesh" id="BoxMesh_jjgbg"]
+size = Vector3(2, 2, 2)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_bo1nx"]
+points = PackedVector3Array(-1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1, 1, -1, 1, -1)
+
 [node name="Main" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -40,3 +46,13 @@ shape = SubResource("ConvexPolygonShape3D_8gbba")
 
 [node name="Player" parent="." instance=ExtResource("1_jjgbg")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.39299, 0.346826, -1.65791)
+
+[node name="Target" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.38244, 9.68384)
+
+[node name="mainBodyMesh" type="MeshInstance3D" parent="Target"]
+mesh = SubResource("BoxMesh_jjgbg")
+skeleton = NodePath("")
+
+[node name="mainBodyCol" type="CollisionShape3D" parent="Target"]
+shape = SubResource("ConvexPolygonShape3D_bo1nx")

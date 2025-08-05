@@ -18,7 +18,6 @@ public partial class Player : CharacterBody3D
     private ProjectilePool projectilePool;
     [Export] private Node3D projectileSpawnPos;
 
-
     // Debug
     Vector3 lineStart;
     Vector3 lineEnd;
@@ -84,6 +83,35 @@ public partial class Player : CharacterBody3D
         }
     }
 
+    static Ball.CurveType GetCurveType()
+    {
+        if (Input.IsActionPressed("Forward"))
+        {
+            GD.Print("Up");
+            return Ball.CurveType.Up;
+        }
+        else if (Input.IsActionPressed("Backward"))
+        {
+            GD.Print("Down");
+            return Ball.CurveType.Down;
+        }
+        else if (Input.IsActionPressed("Left"))
+        {
+            GD.Print("Left");
+            return Ball.CurveType.Left;
+        }
+        else if (Input.IsActionPressed("Right"))
+        {
+            GD.Print("Right");
+            return Ball.CurveType.Right;
+        }
+        else
+        {
+            GD.Print("None");
+            return Ball.CurveType.None;
+        }
+    }
+
     private void Shoot(Vector3 t_targetPos)
     {
         var projectile = projectilePool.GetProjectile();
@@ -97,7 +125,9 @@ public partial class Player : CharacterBody3D
                 float distToTarget = (projectileSpawnPos.GlobalPosition - t_targetPos).Length();
                 if (distToTarget <= MAX_RANGE)
                 {
-                    p.Shoot(projectileSpawnPos.GlobalPosition, t_targetPos);
+                    Ball.CurveType curveType = GetCurveType();
+
+                    p.Shoot(projectileSpawnPos.GlobalPosition, t_targetPos, curveType);
                 }
                 else
                 {
@@ -147,10 +177,5 @@ public partial class Player : CharacterBody3D
         {
             GetTree().Quit();
         }
-
-        // Debug
-        Color red = new Color(1, 0, 0);
-        DebugDraw3D.DrawArrow(lineStart, lineEnd, red, 0.1f);
-        DebugDraw3D.DrawSphere(projectileSpawnPos.GlobalPosition, 0.5f, red);
     }
 }

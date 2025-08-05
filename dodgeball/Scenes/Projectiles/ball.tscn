@@ -62,10 +62,6 @@ script = ExtResource("1_s71y7")
 curveAmount = 5.0
 curve = SubResource("Curve_s71y7")
 
-[node name="Timer" type="Timer" parent="."]
-wait_time = 5.0
-one_shot = true
-
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 material_override = ExtResource("2_cxiws")
 mesh = SubResource("SphereMesh_eohde")
